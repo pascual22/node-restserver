@@ -1,6 +1,7 @@
 const express = require('express');
-const Usuario = require('../models/usuario');
 const bcrypt = require('bcrypt-nodejs');
+const Usuario = require('../models/usuario');
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
 const salt = bcrypt.genSaltSync(10);
 const _ = require('underscore');
 
@@ -10,12 +11,12 @@ app.get('/', function (req, res) {
     res.json('Hello World')
 });
 
-app.get('/usuario', function (req, res) {
+app.get('/usuario', verificaToken, (req, res) => {
 
     let desde = Number(req.query.desde) || 0;
     let limite = Number(req.query.limite) || 0;
 
-    Usuario.find({estado: true}, 'nombre email google estado role')
+    Usuario.find({ estado: true }, 'nombre email google estado role')
         .skip(desde)
         .limit(limite)
         .exec((err, usuarios) => {
@@ -26,7 +27,7 @@ app.get('/usuario', function (req, res) {
                 });
             }
 
-            Usuario.count({estado: true}, (err, conteo) => {
+            Usuario.count({ estado: true }, (err, conteo) => {
 
                 res.json({
                     ok: true,
@@ -39,7 +40,7 @@ app.get('/usuario', function (req, res) {
 
 });
 
-app.post('/usuario', function (req, res) {
+app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
 
     let body = req.body;
 
@@ -67,7 +68,7 @@ app.post('/usuario', function (req, res) {
     });
 });
 
-app.put('/usuario/:id', function (req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdminRole], function (req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
@@ -87,7 +88,7 @@ app.put('/usuario/:id', function (req, res) {
 
 });
 
-app.delete('/usuario/:id', function (req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdminRole], function (req, res) {
 
     let id = req.params.id;
 
