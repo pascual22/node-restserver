@@ -1,7 +1,5 @@
 /* 
-
 Puerto
-
 */
 
 process.env.PORT = process.env.PORT || 3000;
@@ -39,3 +37,8 @@ process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
 SEED semilla de autenticacion
 */
 process.env.SEED = process.env.SEED || 'este-es-el-seed-desarrollo';
+
+/*
+google client ID
+ */
+process.env.CLIENT_ID = process.env.CLIENT_ID || '757336159702-u2ceilsdqf2d6rc1adhrpobsr9n39q0l.apps.googleusercontent.com';
